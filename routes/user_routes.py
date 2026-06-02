@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from controllers.user_controller import UserController
 
-user_bp = Blueprint("user", __name__, url_prefix="/users")
+user_bp = Blueprint("user", __name__, url_prefix="/admin/users")
 
 user_bp.add_url_rule("/", "index", UserController.index, methods=["GET"])
 user_bp.add_url_rule(

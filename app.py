@@ -4,6 +4,7 @@ from config import Config
 from database import ensure_database_exists, init_db
 from routes.produit_routes import produit_bp
 from routes.user_routes import user_bp
+from routes.chat_routes import chat_bp
 
 
 def create_app():
@@ -13,10 +14,11 @@ def create_app():
     init_db(app)
     app.register_blueprint(produit_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(chat_bp)
 
     @app.route("/")
     def home():
-        return redirect(url_for("produit.index"))
+        return redirect(url_for("chat.index"))
 
     return app
 

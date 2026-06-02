@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from controllers.produit_controller import ProduitController
 
-produit_bp = Blueprint("produit", __name__, url_prefix="/produits")
+produit_bp = Blueprint("produit", __name__, url_prefix="/admin/produits")
 
 produit_bp.add_url_rule("/", "index", ProduitController.index, methods=["GET"])
 produit_bp.add_url_rule(
