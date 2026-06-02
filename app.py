@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()  # Load .env before anything else
+
 from flask import Flask, redirect, url_for
 
 from config import Config
@@ -15,6 +19,11 @@ def create_app():
     app.register_blueprint(produit_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(chat_bp)
+    
+    from routes.document_routes import document_bp
+    app.register_blueprint(document_bp)
+    
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     @app.route("/")
     def home():

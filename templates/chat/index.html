@@ -5,20 +5,26 @@
 {% block content %}
 <div class="flex flex-col h-[calc(100vh-12rem)] max-w-4xl mx-auto border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden">
     <!-- Header -->
-    <div class="flex items-center gap-3 px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white shadow-sm">
-            <i data-lucide="bot" class="w-6 h-6"></i>
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white shadow-sm">
+                <i data-lucide="bot" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-semibold tracking-tight text-gray-900">Assistant Virtuel SCS</h2>
+                <p class="text-xs text-green-600 font-medium flex items-center gap-1.5 mt-0.5">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    En ligne · Gemini 1.5 Flash
+                </p>
+            </div>
         </div>
-        <div>
-            <h2 class="text-lg font-semibold tracking-tight text-gray-900">Assistant Virtuel SCS</h2>
-            <p class="text-xs text-green-600 font-medium flex items-center gap-1.5 mt-0.5">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                En ligne
-            </p>
-        </div>
+        <a href="{{ url_for('document.index') }}" class="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors border border-gray-200 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+            Documents IA
+        </a>
     </div>
 
     <!-- Messages Area -->
@@ -28,89 +34,117 @@
             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm">
                 <i data-lucide="bot" class="w-4 h-4"></i>
             </div>
-            <div class="flex-1 bg-white border border-gray-100 rounded-2xl rounded-tl-none px-5 py-3 shadow-sm inline-block max-w-[80%] text-gray-800">
-                <p class="text-sm leading-relaxed">Bonjour ! Je suis votre assistant virtuel Smart Customer Support. Comment puis-je vous aider aujourd'hui ?</p>
-            </div>
-        </div>
-        
-        <!-- User Message (Example) -->
-        <div class="flex gap-4 flex-row-reverse">
-            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 shadow-sm">
-                <i data-lucide="user" class="w-4 h-4"></i>
-            </div>
-            <div class="flex-1 bg-blue-600 text-white rounded-2xl rounded-tr-none px-5 py-3 shadow-sm inline-block max-w-[80%]">
-                <p class="text-sm leading-relaxed">J'aimerais avoir des informations sur vos produits.</p>
-            </div>
-        </div>
-
-        <!-- AI Response (Example) -->
-        <div class="flex gap-4">
-            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm">
-                <i data-lucide="bot" class="w-4 h-4"></i>
-            </div>
-            <div class="flex-1 bg-white border border-gray-100 rounded-2xl rounded-tl-none px-5 py-3 shadow-sm inline-block max-w-[80%] text-gray-800">
-                <p class="text-sm leading-relaxed">Bien sûr ! Nous proposons une large gamme de produits. Que recherchez-vous exactement ? Vous pouvez utiliser la barre de recherche pour affiner vos choix.</p>
+            <div class="bg-white border border-gray-100 rounded-2xl rounded-tl-none px-5 py-3 shadow-sm max-w-[80%] text-gray-800">
+                <p class="text-sm leading-relaxed">Bonjour ! Je suis votre assistant virtuel Smart Customer Support, propulsé par Gemini. Comment puis-je vous aider aujourd'hui ?</p>
             </div>
         </div>
     </div>
 
     <!-- Input Area -->
     <div class="p-4 border-t border-gray-100 bg-white">
-        <form class="flex gap-2 items-center" onsubmit="event.preventDefault(); addMessage();">
-            <button type="button" class="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100 flex-shrink-0">
-                <i data-lucide="paperclip" class="w-5 h-5"></i>
-            </button>
-            <input type="text" id="chat-input" placeholder="Tapez votre message ici..." autocomplete="off"
-                class="flex-1 h-12 px-5 rounded-full border border-gray-200 bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all shadow-inner">
-            <button type="submit" class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 flex-shrink-0">
-                <i data-lucide="send" class="w-5 h-5 ml-1"></i>
+        <form class="flex gap-2 items-center" id="chat-form" onsubmit="event.preventDefault(); sendMessage();">
+            <input type="text" id="chat-input" placeholder="Posez votre question ici..." autocomplete="off"
+                class="flex-1 h-12 px-5 rounded-full border border-gray-200 bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all">
+            <button type="submit" id="send-btn" class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors shadow-sm flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i data-lucide="send" class="w-5 h-5 ml-0.5"></i>
             </button>
         </form>
+        <p class="text-center text-xs text-gray-400 mt-2">Les réponses sont basées sur les documents PDF chargés dans votre <a href="{{ url_for('document.index') }}" class="underline hover:text-blue-500">base de connaissances</a>.</p>
     </div>
 </div>
 
 <script>
-    function addMessage() {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if (!text) return;
-        
-        const messagesArea = document.getElementById('chat-messages');
-        
-        // Add User message
-        const userHtml = `
-        <div class="flex gap-4 flex-row-reverse animate-in slide-in-from-bottom-2 duration-300 mt-6">
-            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 shadow-sm">
-                <i data-lucide="user" class="w-4 h-4"></i>
-            </div>
-            <div class="flex-1 bg-blue-600 text-white rounded-2xl rounded-tr-none px-5 py-3 shadow-sm inline-block max-w-[80%]">
-                <p class="text-sm leading-relaxed">${text}</p>
-            </div>
-        </div>
-        `;
-        messagesArea.insertAdjacentHTML('beforeend', userHtml);
-        lucide.createIcons();
-        input.value = '';
-        
-        // Scroll to bottom smoothly
+    const messagesArea = document.getElementById('chat-messages');
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    function scrollBottom() {
         messagesArea.scrollTo({ top: messagesArea.scrollHeight, behavior: 'smooth' });
-        
-        // Simulate AI typing...
-        setTimeout(() => {
-            const aiHtml = `
-            <div class="flex gap-4 animate-in slide-in-from-bottom-2 duration-300 mt-6">
+    }
+
+    function appendMessage(role, text) {
+        const isUser = role === 'user';
+        // Convert simple markdown-like newlines to <br> for readability
+        const formattedText = text.replace(/\n/g, '<br>');
+        const html = isUser
+            ? `<div class="flex gap-4 flex-row-reverse">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 shadow-sm">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+                <div class="bg-blue-600 text-white rounded-2xl rounded-tr-none px-5 py-3 shadow-sm max-w-[80%]">
+                    <p class="text-sm leading-relaxed">${formattedText}</p>
+                </div>
+               </div>`
+            : `<div class="flex gap-4">
                 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm">
                     <i data-lucide="bot" class="w-4 h-4"></i>
                 </div>
-                <div class="flex-1 bg-white border border-gray-100 rounded-2xl rounded-tl-none px-5 py-3 shadow-sm inline-block max-w-[80%] text-gray-800">
-                    <p class="text-sm leading-relaxed">Ceci est une réponse automatique de démonstration. L'intégration de la vraie IA (OpenAI, Gemini...) sera faite dans la prochaine étape !</p>
+                <div class="bg-white border border-gray-100 rounded-2xl rounded-tl-none px-5 py-3 shadow-sm max-w-[80%] text-gray-800">
+                    <p class="text-sm leading-relaxed">${formattedText}</p>
+                </div>
+               </div>`;
+        messagesArea.insertAdjacentHTML('beforeend', html);
+        lucide.createIcons();
+        scrollBottom();
+    }
+
+    function appendTypingIndicator() {
+        const html = `<div class="flex gap-4" id="typing-indicator">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm">
+                <i data-lucide="bot" class="w-4 h-4"></i>
+            </div>
+            <div class="bg-white border border-gray-100 rounded-2xl rounded-tl-none px-5 py-3.5 shadow-sm">
+                <div class="flex gap-1 items-center h-4">
+                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style="animation-delay: 0ms"></span>
+                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style="animation-delay: 150ms"></span>
+                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style="animation-delay: 300ms"></span>
                 </div>
             </div>
-            `;
-            messagesArea.insertAdjacentHTML('beforeend', aiHtml);
-            lucide.createIcons();
-            messagesArea.scrollTo({ top: messagesArea.scrollHeight, behavior: 'smooth' });
-        }, 1000);
+        </div>`;
+        messagesArea.insertAdjacentHTML('beforeend', html);
+        lucide.createIcons();
+        scrollBottom();
+    }
+
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    async function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        // Show user message & disable input
+        appendMessage('user', text);
+        input.value = '';
+        input.disabled = true;
+        sendBtn.disabled = true;
+        appendTypingIndicator();
+
+        try {
+            const response = await fetch('/chat/api/message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+
+            const data = await response.json();
+            removeTypingIndicator();
+
+            if (data.reply) {
+                appendMessage('ai', data.reply);
+            } else if (data.error) {
+                appendMessage('ai', `⚠️ Erreur : ${data.error}`);
+            }
+        } catch (err) {
+            removeTypingIndicator();
+            appendMessage('ai', '⚠️ Une erreur réseau est survenue. Veuillez réessayer.');
+        } finally {
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
     }
 </script>
 {% endblock %}

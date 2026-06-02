@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Documents IA{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h2 class="text-2xl font-bold tracking-tight">Base de connaissances IA</h2>
+        <p class="text-sm text-muted-foreground">Gérez les documents PDF utilisés par l'IA pour générer ses réponses.</p>
+    </div>
+    <a href="{{ url_for('document.create_form') }}" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2">
+        <i data-lucide="upload" class="w-4 h-4 mr-2"></i>
+        Uploader un PDF
+    </a>
+</div>
+
+<div class="rounded-md border border-gray-200 bg-white shadow-sm overflow-hidden">
+    {% if documents %}
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs uppercase bg-gray-50/50 border-b border-gray-200 text-gray-500">
+                <tr>
+                    <th scope="col" class="px-6 py-4 font-medium">ID</th>
+                    <th scope="col" class="px-6 py-4 font-medium">Nom du fichier</th>
+                    <th scope="col" class="px-6 py-4 font-medium">Ajouté le</th>
+                    <th scope="col" class="px-6 py-4 font-medium text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for doc in documents %}
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    <td class="px-6 py-4 font-medium text-gray-900">{{ doc.id }}</td>
+                    <td class="px-6 py-4 font-medium flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-red-500"></i>
+                        {{ doc.filename }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-500">{{ doc.created_at.strftime('%Y-%m-%d %H:%M') if doc.created_at else '-' }}</td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <form action="{{ url_for('document.delete', document_id=doc.id) }}"
+                              method="POST" class="inline-block"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce document ?');">
+                            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 h-8 px-3 py-1">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="rounded-full bg-gray-100 p-3 mb-4">
+            <i data-lucide="files" class="w-6 h-6 text-gray-500"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900">Aucun document</h3>
+        <p class="mt-1 text-sm text-gray-500">Ajoutez des fichiers PDF pour alimenter la base de connaissances.</p>
+        <div class="mt-6">
+            <a href="{{ url_for('document.create_form') }}" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2">
+                <i data-lucide="upload" class="w-4 h-4 mr-2"></i>
+                Uploader un fichier
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

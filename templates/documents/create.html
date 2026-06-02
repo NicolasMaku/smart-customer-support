@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Uploader un PDF{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <a href="{{ url_for('document.index') }}" class="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-4">
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Retour à la liste
+        </a>
+        <h2 class="text-2xl font-bold tracking-tight">Ajouter un document</h2>
+        <p class="text-sm text-muted-foreground">Uploadez un fichier PDF qui sera utilisé par l'IA comme source d'information.</p>
+    </div>
+
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
+        <!-- enctype="multipart/form-data" is required for file uploads -->
+        <form action="{{ url_for('document.upload') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+            <div class="space-y-2">
+                <label for="file" class="text-sm font-medium leading-none">Fichier PDF <span class="text-red-500">*</span></label>
+                <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer" onclick="document.getElementById('file').click()">
+                    <div class="text-center">
+                        <i data-lucide="file-up" class="mx-auto h-12 w-12 text-gray-300"></i>
+                        <div class="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
+                            <span class="relative cursor-pointer rounded-md bg-transparent font-semibold text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500">
+                                <span>Sélectionner un fichier</span>
+                                <input id="file" name="file" type="file" accept=".pdf" class="sr-only" required onchange="document.getElementById('file-name').textContent = this.files[0].name">
+                            </span>
+                        </div>
+                        <p class="text-xs leading-5 text-gray-600" id="file-name">Format supporté: PDF (max 16 MB)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-end space-x-4 pt-4 border-t border-gray-100">
+                <a href="{{ url_for('document.index') }}" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background border border-input bg-background hover:bg-gray-100 h-10 px-4 py-2">
+                    Annuler
+                </a>
+                <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                    <i data-lucide="upload" class="w-4 h-4 mr-2"></i>
+                    Uploader
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
