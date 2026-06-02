@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr" class="antialiased">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Customer Support{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Tailwind config for Shadcn-like appearance */
+        @layer base {
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 222.2 84% 4.9%;
+                --muted: 210 40% 96.1%;
+                --muted-foreground: 215.4 16.3% 46.9%;
+                --border: 214.3 31.8% 91.4%;
+                --input: 214.3 31.8% 91.4%;
+                --primary: 222.2 47.4% 11.2%;
+                --primary-foreground: 210 40% 98%;
+                --ring: 222.2 84% 4.9%;
+                --radius: 0.5rem;
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 text-foreground min-h-screen font-sans">
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex gap-4 items-center">
+                    <a class="flex items-center gap-2 font-semibold text-lg tracking-tight" href="{{ url_for('produit.index') }}">
+                        <i data-lucide="box" class="w-6 h-6"></i>
+                        Produits
+                    </a>
+                    <a class="flex items-center gap-2 font-semibold text-lg tracking-tight ml-4 text-muted-foreground hover:text-foreground" href="{{ url_for('user.index') }}">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                        Utilisateurs
+                    </a>
+                </div>
+                <div class="flex gap-2">
+                    <a class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-gray-100 h-9 px-4 py-2" href="{{ url_for('produit.create_form') }}">
+                        <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                        Produit
+                    </a>
+                    <a class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2" href="{{ url_for('user.create_form') }}">
+                        <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                        Utilisateur
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-6 space-y-4">
+            {% for category, message in messages %}
+            {% set alert_classes = "bg-green-50 text-green-800 border-green-200" if category == "success" else
+            "bg-red-50 text-red-800 border-red-200" if category == "danger" else "bg-blue-50 text-blue-800
+            border-blue-200" %}
+            <div class="p-4 border rounded-lg flex items-center justify-between {{ alert_classes }}" role="alert">
+                <div class="flex items-center gap-2">
+                    {% if category == "success" %}
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    {% elif category == "danger" %}
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                    {% else %}
+                    <i data-lucide="info" class="w-5 h-5"></i>
+                    {% endif %}
+                    <p class="text-sm font-medium">{{ message }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

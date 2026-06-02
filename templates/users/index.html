@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h2 class="text-2xl font-bold tracking-tight">Utilisateurs</h2>
+        <p class="text-sm text-muted-foreground">Gérez les accès et les rôles de vos utilisateurs.</p>
+    </div>
+</div>
+
+<div class="rounded-md border border-gray-200 bg-white shadow-sm overflow-hidden">
+    {% if users %}
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs uppercase bg-gray-50/50 border-b border-gray-200 text-gray-500">
+                <tr>
+                    <th scope="col" class="px-6 py-4 font-medium">ID</th>
+                    <th scope="col" class="px-6 py-4 font-medium">Nom d'utilisateur</th>
+                    <th scope="col" class="px-6 py-4 font-medium">Email</th>
+                    <th scope="col" class="px-6 py-4 font-medium">Rôle</th>
+                    <th scope="col" class="px-6 py-4 font-medium">Créé le</th>
+                    <th scope="col" class="px-6 py-4 font-medium text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for user in users %}
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    <td class="px-6 py-4 font-medium text-gray-900">{{ user.id }}</td>
+                    <td class="px-6 py-4 font-medium">{{ user.username }}</td>
+                    <td class="px-6 py-4 text-gray-500">{{ user.email }}</td>
+                    <td class="px-6 py-4">
+                        {% if user.role == 'admin' %}
+                            <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Admin</span>
+                        {% elif user.role == 'agent' %}
+                            <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Agent</span>
+                        {% else %}
+                            <span class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">User</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-gray-500">{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else '-' }}</td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <a href="{{ url_for('user.edit_form', user_id=user.id) }}"
+                           class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-gray-100 hover:text-accent-foreground h-8 px-3 py-1">
+                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                        </a>
+                        <form action="{{ url_for('user.delete', user_id=user.id) }}"
+                              method="POST" class="inline-block"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 h-8 px-3 py-1">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="rounded-full bg-gray-100 p-3 mb-4">
+            <i data-lucide="users" class="w-6 h-6 text-gray-500"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900">Aucun utilisateur</h3>
+        <p class="mt-1 text-sm text-gray-500">Commencez par créer un nouvel utilisateur.</p>
+        <div class="mt-6">
+            <a href="{{ url_for('user.create_form') }}" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2">
+                <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                Ajouter un utilisateur
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
