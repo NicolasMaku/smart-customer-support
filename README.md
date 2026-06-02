@@ -169,10 +169,4 @@ Interface utilisateur → API Flask → SQLAlchemy → MySQL → Gemini API
 
 # 👨‍💻 Auteur
 
-EZ wald
-
----
-
-# 📜 Licence
-
-Licence MIT
+Nicolas Ranaivojaona
