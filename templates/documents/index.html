@@ -22,6 +22,7 @@
                 <tr>
                     <th scope="col" class="px-6 py-4 font-medium">ID</th>
                     <th scope="col" class="px-6 py-4 font-medium">Nom du fichier</th>
+                    <th scope="col" class="px-6 py-4 font-medium">Statut</th>
                     <th scope="col" class="px-6 py-4 font-medium">Ajouté le</th>
                     <th scope="col" class="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
@@ -34,8 +35,37 @@
                         <i data-lucide="file-text" class="w-4 h-4 text-red-500"></i>
                         {{ doc.filename }}
                     </td>
+                    <td class="px-6 py-4">
+                        {% if doc.is_active %}
+                            <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                Actif
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                                Inactif
+                            </span>
+                        {% endif %}
+                    </td>
                     <td class="px-6 py-4 text-gray-500">{{ doc.created_at.strftime('%Y-%m-%d %H:%M') if doc.created_at else '-' }}</td>
                     <td class="px-6 py-4 text-right space-x-2">
+                        <form action="{{ url_for('document.toggle', document_id=doc.id) }}"
+                              method="POST" class="inline-block">
+                            {% if doc.is_active %}
+                            <button type="submit" title="Désactiver"
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-yellow-200 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 hover:border-yellow-300 h-8 px-3 py-1">
+                                <i data-lucide="pause-circle" class="w-4 h-4 mr-1"></i>
+                                Désactiver
+                            </button>
+                            {% else %}
+                            <button type="submit" title="Activer"
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:border-green-300 h-8 px-3 py-1">
+                                <i data-lucide="play-circle" class="w-4 h-4 mr-1"></i>
+                                Activer
+                            </button>
+                            {% endif %}
+                        </form>
                         <form action="{{ url_for('document.delete', document_id=doc.id) }}"
                               method="POST" class="inline-block"
                               onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce document ?');">

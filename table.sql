@@ -7,3 +7,5 @@ CREATE TABLE users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Ajouter la colonne is_active à la table documents existante
+ALTER TABLE documents ADD COLUMN is_active TINYINT(1) NOT NULL DEFAULT 1;

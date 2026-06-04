@@ -26,29 +26,33 @@ class ChatController:
 
         genai.configure(api_key=api_key)
 
-        # Retrieve all PDFs from DB and upload them to Gemini File API
-        documents = Document.query.all()
-        uploaded_files = []
-        for doc in documents:
-            if os.path.exists(doc.filepath):
-                try:
-                    uploaded_file = genai.upload_file(
-                        doc.filepath,
-                        mime_type="application/pdf"
-                    )
-                    uploaded_files.append(uploaded_file)
-                except Exception as e:
-                    print(f"[ChatController] Error uploading {doc.filepath}: {e}")
+        # Retrieve active PDFs from DB
+        documents = Document.query.filter_by(is_active=True).all()
+        # uploaded_files = []
+        # for doc in documents:
+        #     if os.path.exists(doc.filepath):
+        #         try:
+        #             uploaded_file = genai.upload_file(
+        #                 doc.filepath,
+        #                 mime_type="application/pdf"
+        #             )
+        #             uploaded_files.append(uploaded_file)
+        #         except Exception as e:
+        #             print(f"[ChatController] Error uploading {doc.filepath}: {e}")
 
-        print('Cleee Gemini: ', api_key)
+        # print('Cleee Gemini: ', api_key)
 
         # Récupérer le contexte RAG à partir de tous les PDFs en base
         rag_context = ""
         try:
-            filepaths = [doc.filepath for doc in documents if os.path.exists(doc.filepath)]
-            if filepaths:
+            doc_ids_filepaths = [
+                (doc.id, doc.filepath)
+                for doc in documents
+                if os.path.exists(doc.filepath)
+            ]
+            if doc_ids_filepaths:
                 rag_service = RAGservice()
-                rag_context = rag_service.rag_research(user_message, filepaths)
+                rag_context = rag_service.rag_research(user_message, doc_ids_filepaths)
         except Exception as e:
             print(f"[ChatController] RAG error: {e}")
 
@@ -88,7 +92,7 @@ class ChatController:
             enriched_message = user_message
 
         # Build the content list: PDFs first, then the enriched prompt
-        content = uploaded_files + [enriched_message]
+        content = [enriched_message]
 
         try:
             response = model.generate_content(content)
